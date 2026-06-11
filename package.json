@@ -1,0 +1,21 @@
+{
+  "name": "plain-token",
+  "version": "2.0.0",
+  "description": "A lightweight anime-inspired static blog built with plain HTML, CSS, JavaScript, and JSON.",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python -m http.server 8080 --bind 0.0.0.0",
+    "screenshots": "node screenshot.mjs 8080"
+  },
+  "keywords": [
+    "blog",
+    "static-site",
+    "anime",
+    "frontend"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}
