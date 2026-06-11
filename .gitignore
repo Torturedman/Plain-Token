@@ -1,3 +1,7 @@
 node_modules/
 screenshots/
 assets/image/
+screenshot.mjs
+package.json
+package-lock.json
+.claude/
