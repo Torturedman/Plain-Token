@@ -447,18 +447,7 @@ button {
 }
 
 .character-stand {
-  position: absolute;
-  right: 28px;
-  bottom: 0;
-  width: 46%;
-  height: 88%;
-  background-image:
-    var(--character-image),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 120, 173, 0.26));
-  background-repeat: no-repeat;
-  background-position: center bottom;
-  background-size: contain;
-  filter: drop-shadow(18px 18px 0 rgba(39, 51, 74, 0.10));
+  display: none;
 }
 
 .scene-card {
@@ -559,8 +548,8 @@ button {
 }
 
 .toolbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-bottom: 18px;
 }
@@ -1220,10 +1209,6 @@ button {
 
   .stats-strip,
   .side-column {
-    grid-template-columns: 1fr;
-  }
-
-  .toolbar {
     grid-template-columns: 1fr;
   }
 

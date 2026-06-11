@@ -76,7 +76,7 @@
         <div class="hero-copy">
           <p class="eyebrow">After School Archive</p>
           <h1 class="hero-title" id="home-title">星屑放映室里的工程日记</h1>
-          <p class="hero-subtitle">这里记录前端、AI 工具和个人创作。视觉保持轻二次元的透明感，头像、封面与角色图会让这里更像一间私人的放映室。</p>
+          <p class="hero-subtitle">前端工程 × AI 工具 · 带实践记录的个人博客</p>
           <div class="hero-actions">
             <a class="primary-link" href="#/post/${encodeURIComponent(slugOf(latest))}">读最新文章</a>
             <a class="secondary-link" href="#/about">关于这个站点</a>
@@ -155,15 +155,15 @@
   }
 
   function renderTagButtons(tags, current) {
-    const all = `<button class="tag${current ? '' : ' active'}" type="button" data-tag-clear="1">全部</button>`
+    const all = `<a class="tag${current ? '' : ' active'}" href="#/">全部</a>`
     return all + tags.map(tag => (
-      `<button class="tag${tag === current ? ' active' : ''}" type="button" data-tag="${escAttr(tag)}">#${escHtml(tag)}</button>`
+      `<a class="tag${tag === current ? ' active' : ''}" href="#/tag/${encodeURIComponent(tag)}">#${escHtml(tag)}</a>`
     )).join('')
   }
 
   function renderArticleCard(post) {
     const slug = slugOf(post)
-    const tags = post.tags.map(tag => `<button class="tag" type="button" data-tag="${escAttr(tag)}">#${escHtml(tag)}</button>`).join('')
+    const tags = post.tags.map(tag => `<a class="tag" href="#/tag/${encodeURIComponent(tag)}">#${escHtml(tag)}</a>`).join('')
 
     return `
       <li class="article-card" data-slug="${escAttr(slug)}" tabindex="0">
@@ -244,7 +244,7 @@
       return
     }
 
-    const tags = post.tags.map(tag => `<button class="tag" type="button" data-tag="${escAttr(tag)}">#${escHtml(tag)}</button>`).join('')
+    const tags = post.tags.map(tag => `<a class="tag" href="#/tag/${encodeURIComponent(tag)}">#${escHtml(tag)}</a>`).join('')
 
     mainContent.innerHTML = `
       <article class="post-page">
@@ -271,7 +271,6 @@
     `
 
     buildTOC()
-    bindTagClicks()
     window.addEventListener('scroll', onTOCScroll, { passive: true })
     focusMain()
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -312,7 +311,7 @@
   function bindHomeEvents() {
     document.querySelectorAll('.article-card').forEach(card => {
       card.addEventListener('click', event => {
-        if (event.target.closest('[data-tag], [data-tag-clear]')) return
+        if (event.target.closest('.tag, a')) return
         location.hash = `#/post/${encodeURIComponent(card.dataset.slug)}`
       })
       card.addEventListener('keydown', event => {
@@ -322,24 +321,7 @@
       })
     })
 
-    bindTagClicks()
     bindSearch()
-  }
-
-  function bindTagClicks() {
-    document.querySelectorAll('[data-tag]').forEach(button => {
-      button.addEventListener('click', event => {
-        event.stopPropagation()
-        location.hash = `#/tag/${encodeURIComponent(button.dataset.tag)}`
-      })
-    })
-
-    document.querySelectorAll('[data-tag-clear]').forEach(button => {
-      button.addEventListener('click', event => {
-        event.stopPropagation()
-        location.hash = '#/'
-      })
-    })
   }
 
   function bindSearch() {
@@ -378,10 +360,21 @@
     const items = Array.from(headings).map((heading, index) => {
       const id = `section-${index + 1}`
       heading.id = id
-      return `<li><a href="#${id}" data-toc-link>${escHtml(heading.textContent)}</a></li>`
+      return `<li><a href="javascript:void(0)" data-toc-link data-toc-target="${id}">${escHtml(heading.textContent)}</a></li>`
     }).join('')
 
     toc.innerHTML = `<p class="toc-title">目录</p><ul>${items}</ul>`
+
+    /* Bind TOC click → smooth scroll to heading */
+    toc.querySelectorAll('[data-toc-link]').forEach(link => {
+      link.addEventListener('click', event => {
+        event.preventDefault()
+        const target = document.getElementById(link.dataset.tocTarget)
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      })
+    })
   }
 
   function onTOCScroll() {
@@ -395,7 +388,7 @@
     })
 
     links.forEach(link => {
-      link.classList.toggle('active', link.getAttribute('href') === `#${current}`)
+      link.classList.toggle('active', link.dataset.tocTarget === current)
     })
   }
 
@@ -461,11 +454,8 @@
   }
 
   function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    })
+    const [y, m, d] = dateString.split('-')
+    return `${y}/${m}/${d}`
   }
 
   function slugOf(post) {
