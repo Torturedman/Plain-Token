@@ -20,6 +20,8 @@
 |   `-- app.js
 |-- data/
 |   `-- posts.json
+|-- scripts/
+|   `-- validate-content.mjs
 |-- assets/
 |   `-- README.md
 |-- screenshot.mjs
@@ -51,6 +53,18 @@ http://localhost:8080
 - `cover`：封面图片路径
 - `excerpt`：摘要
 - `body`：HTML 正文
+
+更新后运行内容校验，避免把未来日期、错误日期格式或不存在的封面路径提交上去：
+
+```bash
+node scripts/validate-content.mjs
+```
+
+如果需要按指定日期检查，例如今天是 2026-06-12：
+
+```bash
+$env:PLAIN_TOKEN_TODAY='2026-06-12'; node scripts/validate-content.mjs
+```
 
 ## 上传图片
 

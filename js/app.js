@@ -494,7 +494,7 @@
       const response = await fetch('data/posts.json', { cache: 'no-store' })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       posts = await response.json()
-      posts.sort((a, b) => new Date(b.date) - new Date(a.date))
+      posts.sort((a, b) => String(b.date).localeCompare(String(a.date)))
     } catch (error) {
       mainContent.innerHTML = `
         <div class="error-page">
