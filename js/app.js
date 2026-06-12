@@ -360,7 +360,7 @@
     const items = Array.from(headings).map((heading, index) => {
       const id = `section-${index + 1}`
       heading.id = id
-      return `<li><a href="javascript:void(0)" data-toc-link data-toc-target="${id}">${escHtml(heading.textContent)}</a></li>`
+      return `<li><a href="#${id}" data-toc-link data-toc-target="${id}">${escHtml(heading.textContent)}</a></li>`
     }).join('')
 
     toc.innerHTML = `<p class="toc-title">目录</p><ul>${items}</ul>`
@@ -465,7 +465,10 @@
   function cssImage(path) {
     if (!path) return 'none'
     const safe = String(path).replace(/["'()\\\n\r]/g, '')
-    return `url('${safe}')`
+    const cssPath = /^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(safe)
+      ? safe
+      : `../${safe.replace(/^\.?\//, '')}`
+    return `url('${cssPath}')`
   }
 
   function escHtml(value) {
